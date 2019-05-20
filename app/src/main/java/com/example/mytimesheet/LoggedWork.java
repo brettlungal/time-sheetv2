@@ -27,5 +27,8 @@ public class LoggedWork {
         return hours;
     }
 
+    public String toString(){
+        return date+ hours;
+    }
 
 }

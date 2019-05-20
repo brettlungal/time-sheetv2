@@ -35,6 +35,8 @@ public class ViewDataActivity extends AppCompatActivity implements View.OnClickL
     DatabaseReference dbase;
     List<LoggedWork> workedList;
     String databasePath;
+    TextView totalHoursLogged;
+    double sum=0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,10 @@ public class ViewDataActivity extends AppCompatActivity implements View.OnClickL
         FirebaseUser user = mAuth.getCurrentUser();
         databasePath = user.getEmail().substring(0,user.getEmail().indexOf("@"));
         dbase = FirebaseDatabase.getInstance().getReference(databasePath);
+
+
+        totalHoursLogged = (TextView)findViewById(R.id.theTotal);
+
         listViewWork.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -101,10 +107,8 @@ public class ViewDataActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
-
-
-
     }
+
 
     protected void updateData(String id,String date, double newHours){
         DatabaseReference updateDate = FirebaseDatabase.getInstance().getReference(databasePath).child(id); //got work to be updated
@@ -129,12 +133,13 @@ public class ViewDataActivity extends AppCompatActivity implements View.OnClickL
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 workedList.clear();
-
+                sum = 0;
                 for( DataSnapshot workSnapshot : dataSnapshot.getChildren() ){
                     LoggedWork log = workSnapshot.getValue(LoggedWork.class);
+                    sum += log.getHours();
                     workedList.add(log);
                 }
-
+                totalHoursLogged.setText(sum+"");
                 WorkList adapter = new WorkList(ViewDataActivity.this,workedList);
                 listViewWork.setAdapter(adapter);
 
@@ -147,6 +152,7 @@ public class ViewDataActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
+
 
     @Override
     public void onClick(View v) {

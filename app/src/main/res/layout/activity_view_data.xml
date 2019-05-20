@@ -9,8 +9,8 @@
 
     <ListView
         android:id="@+id/listOfWork"
-        android:layout_width="360dp"
-        android:layout_height="594dp"
+        android:layout_width="364dp"
+        android:layout_height="551dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -37,5 +37,35 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/listOfWork"
-        app:layout_constraintVertical_bias="0.368" />
+        app:layout_constraintVertical_bias="0.703" />
+
+    <TextView
+        android:id="@+id/totalLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Total Logged Hours:"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/returnToProfile"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listOfWork"
+        app:layout_constraintVertical_bias="0.468" />
+
+    <TextView
+        android:id="@+id/theTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="0"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/returnToProfile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.054"
+        app:layout_constraintStart_toEndOf="@+id/totalLabel"
+        app:layout_constraintTop_toBottomOf="@+id/listOfWork" />
 </android.support.constraint.ConstraintLayout>

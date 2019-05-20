@@ -35,6 +35,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     DatabaseReference theDatabase;
     DatePickerDialog.OnDateSetListener dateSelector;
 
+
     int selectedDay,selectedMonth,selectedYear = -1;
 
     @Override
@@ -55,6 +56,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         FirebaseUser user = mAuth.getCurrentUser();
         String databasePath = user.getEmail().substring(0,user.getEmail().indexOf("@"));
         theDatabase = FirebaseDatabase.getInstance().getReference(databasePath);
+
 
 
         hello.setText("Welcome, "+databasePath+"!");
@@ -141,7 +143,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         double finalHours = Double.parseDouble(stringHours);
         if ( !TextUtils.isEmpty(stringHours) &&  ( (selectedDay!=-1) && (selectedMonth!=-1) && (selectedYear!=-1) )){
             //add it
-            String id = theDatabase.push().getKey();
+            String id = theDatabase.push().getKey(); //here if i want to add data under the same child, get the key of an exisiting push
             LoggedWork log = new LoggedWork(id,currDate,finalHours);
             theDatabase.child(id).setValue(log);
             Toast.makeText(getApplicationContext(),"Hours saved",Toast.LENGTH_SHORT).show();
@@ -163,6 +165,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.logButton:
                 hideKeyboard();
                 addHours();
+                hours.setText("");
+                date.setText("Tap To Select Date");
                 break;
 
             case R.id.selectDate:
