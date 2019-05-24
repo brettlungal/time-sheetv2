@@ -143,10 +143,16 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         double finalHours = Double.parseDouble(stringHours);
         if ( !TextUtils.isEmpty(stringHours) &&  ( (selectedDay!=-1) && (selectedMonth!=-1) && (selectedYear!=-1) )){
             //add it
-            String id = theDatabase.push().getKey(); //here if i want to add data under the same child, get the key of an exisiting push
-            LoggedWork log = new LoggedWork(id,currDate,finalHours);
-            theDatabase.child(id).setValue(log);
-            Toast.makeText(getApplicationContext(),"Hours saved",Toast.LENGTH_SHORT).show();
+            if ( finalHours > 24 ){
+                hours.setError("Stop lying");
+                hours.requestFocus();
+            }else {
+                String id = theDatabase.push().getKey(); //here if i want to add data under the same child, get the key of an exisiting push
+                LoggedWork log = new LoggedWork(id,currDate,finalHours);
+                theDatabase.child(id).setValue(log);
+                Toast.makeText(getApplicationContext(),"Hours saved",Toast.LENGTH_SHORT).show();
+            }
+
 
         }else {
             Toast.makeText(getApplicationContext(),"Please enter valid data to save",Toast.LENGTH_SHORT).show();
