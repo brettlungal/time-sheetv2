@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">My Timesheet</string>
+
+
+    <string-array name="show_options">
+        <item>Show All</item>
+        <item>Last 15 Entries</item>
+        <item>Last 30 Entries</item>
+    </string-array>
+
 </resources>

@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewDataActivity extends AppCompatActivity implements View.OnClickListener{
+public class ViewDataActivity extends AppCompatActivity implements View.OnClickListener , AdapterView.OnItemSelectedListener {
 
     FirebaseAuth mAuth;
     ListView listViewWork;
@@ -37,6 +38,9 @@ public class ViewDataActivity extends AppCompatActivity implements View.OnClickL
     String databasePath;
     TextView totalHoursLogged;
     double sum=0.0;
+    Spinner dropdown;
+    int showInterval = Integer.MAX_VALUE;
+    DataSnapshot workData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,9 @@ public class ViewDataActivity extends AppCompatActivity implements View.OnClickL
         FirebaseUser user = mAuth.getCurrentUser();
         databasePath = user.getEmail().substring(0,user.getEmail().indexOf("@"));
         dbase = FirebaseDatabase.getInstance().getReference(databasePath);
+        workData = null;
+        dropdown = (Spinner)findViewById(R.id.spinnerSelecter);
+        dropdown.setOnItemSelectedListener(this);
 
 
         totalHoursLogged = (TextView)findViewById(R.id.theTotal);
@@ -131,14 +138,20 @@ public class ViewDataActivity extends AppCompatActivity implements View.OnClickL
         dbase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                workData = dataSnapshot;
 
                 workedList.clear();
                 sum = 0;
+                int count = 0;
                 for( DataSnapshot workSnapshot : dataSnapshot.getChildren() ){
                     LoggedWork log = workSnapshot.getValue(LoggedWork.class);
                     sum += log.getHours();
                     workedList.add(log);
-                }
+                    count ++;
+                    if ( count == showInterval ){
+                        break;
+                    }
+                 }
                 totalHoursLogged.setText(sum+"");
                 WorkList adapter = new WorkList(ViewDataActivity.this,workedList);
                 listViewWork.setAdapter(adapter);
@@ -165,5 +178,47 @@ public class ViewDataActivity extends AppCompatActivity implements View.OnClickL
 
 
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch (parent.getItemAtPosition(position).toString()){
+            case "Last 15 Entries":
+                showInterval = 15;
+                break;
+            case "Last 30 Entries":
+                showInterval = 30;
+                break;
+            case "Show All":
+                showInterval = Integer.MAX_VALUE;
+                break;
+        }//switch
+
+        if ( workData != null ){
+
+            workedList.clear();
+            sum = 0;
+            int count = 0;
+            for( DataSnapshot workSnapshot : workData.getChildren() ){
+                LoggedWork log = workSnapshot.getValue(LoggedWork.class);
+                sum += log.getHours();
+                workedList.add(log);
+                count++;
+                if ( count == showInterval ){
+                    break;
+                }
+            }
+            totalHoursLogged.setText(sum+"");
+            WorkList adapter = new WorkList(ViewDataActivity.this,workedList);
+            listViewWork.setAdapter(adapter);
+        }
+
+
+
+    }//onItemSelected
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }
